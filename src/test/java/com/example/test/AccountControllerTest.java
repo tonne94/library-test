@@ -64,7 +64,7 @@ public class AccountControllerTest {
         Account account = createAccount("One");
 
         MvcResult result = this.mockMvc.perform(
-                post("/accounts/" + account.getId() + "/rent-book/" + book.getBookRecords().get(0).getId())
+                post("/accounts/" + account.getId() + "/rent-book-record/" + book.getBookRecords().get(0).getId())
         ).andReturn();
 
         AccountDTO accountDTO = objectMapper.readerFor(AccountDTO.class).readValue(result.getResponse().getContentAsByteArray());
@@ -80,7 +80,7 @@ public class AccountControllerTest {
         Account account = createAccount("One");
 
         this.mockMvc.perform(
-                post("/accounts/" + account.getId() + "/rent-book/" + book.getBookRecords().get(0).getId())
+                post("/accounts/" + account.getId() + "/rent-book-record/" + book.getBookRecords().get(0).getId())
         ).andReturn();
 
         MvcResult result = this.mockMvc.perform(

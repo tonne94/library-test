@@ -118,7 +118,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{accountId}/rent-book/{bookRecordId}")
+    @PostMapping("/{accountId}/rent-book-record/{bookRecordId}")
     @JsonView(AccountView.class)
     public ResponseEntity<?> rentBook(@PathVariable Long accountId, @PathVariable Long bookRecordId) {
         log.info("Renting a book with account id: " + accountId + "and book record id: " + bookRecordId);
