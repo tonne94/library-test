@@ -24,7 +24,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account implements Comparable<Account> {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCOUNT_SEQ")
@@ -46,10 +46,4 @@ public class Account implements Comparable<Account> {
     @NotNull
     private boolean isValid = false;
 
-    @Override
-    public int compareTo(Account account) {
-        Long overdueDaysSum = rentRecords.stream().filter(rentRecord -> rentRecord.getActualReturnTime() == null).mapToLong(RentRecord::getOverdueDays).sum();
-        Long overdueDaysSumAccount = account.getRentRecords().stream().filter(rentRecord -> rentRecord.getActualReturnTime() == null).mapToLong(RentRecord::getOverdueDays).sum();
-        return overdueDaysSum.compareTo(overdueDaysSumAccount);
-    }
 }

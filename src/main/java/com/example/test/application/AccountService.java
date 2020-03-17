@@ -3,6 +3,7 @@ package com.example.test.application;
 import com.example.test.domain.model.Account;
 import com.example.test.domain.model.BookRecord;
 import com.example.test.domain.model.RentRecord;
+import com.example.test.dto.AccountDTO;
 import com.example.test.dto.DocumentDTO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,11 +16,11 @@ public interface AccountService {
 
     Account returnBook(RentRecord rentRecord);
 
-    List<Account> findAll(boolean onlyOverdue);
+    List<AccountDTO> findAll(boolean onlyOverdue);
 
-    List<Account> findAllOnlyRentedBooks(boolean onlyOverdue);
+    List<AccountDTO> findAllOnlyRentedBooks(boolean onlyOverdue);
 
-    Optional<Account> findByIdOnlyRentedBooks(Long id);
+    AccountDTO findByIdOnlyRentedBooks(Long id);
 
     Optional<Account> createAccount(Account account);
 

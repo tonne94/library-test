@@ -62,9 +62,9 @@ public class AccountController {
                                                         @RequestParam(value = "only-overdue", required = false) boolean onlyOverdue) {
         log.info("Getting all accounts");
         if (onlyRentedBooks) {
-            return new ResponseEntity<>(accountMapper.accountsToAccountDTOsFromAccount(accountService.findAllOnlyRentedBooks(onlyOverdue)), HttpStatus.OK);
+            return new ResponseEntity<>(accountService.findAllOnlyRentedBooks(onlyOverdue), HttpStatus.OK);
         }
-        return new ResponseEntity<>(accountMapper.accountsToAccountDTOsFromAccount(accountService.findAll(onlyOverdue)), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.findAll(onlyOverdue), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -72,8 +72,11 @@ public class AccountController {
     public ResponseEntity<AccountDTO> getAccount(@PathVariable Long id, @RequestParam(value = "only-rented", required = false) boolean onlyRentedBooks) {
         log.info("Get account by id: " + id);
         if (onlyRentedBooks) {
-            Optional<Account> optionalAccount = accountService.findByIdOnlyRentedBooks(id);
-            return optionalAccount.map(account -> new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(account), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            AccountDTO accountDTO = accountService.findByIdOnlyRentedBooks(id);
+            if(accountDTO!=null){
+                return new ResponseEntity<>(accountDTO, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Optional<Account> optionalAccount = accountRepository.findById(id);
         return optionalAccount.map(account -> new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(account), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

@@ -8,6 +8,7 @@ import com.example.test.domain.model.RentRecord;
 import com.example.test.domain.repository.AccountRepository;
 import com.example.test.domain.repository.BookRecordRepository;
 import com.example.test.domain.repository.RentRecordRepository;
+import com.example.test.dto.AccountDTO;
 import com.example.test.dto.DocumentDTO;
 import com.example.test.interfaces.web.rest.mapper.AccountMapper;
 import com.google.gson.Gson;
@@ -84,10 +85,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> findAll(boolean onlyOverdue) {
+    public List<AccountDTO> findAll(boolean onlyOverdue) {
         List<Account> accounts = accountRepository.findAll();
+        List<AccountDTO> accountDTOs = accountMapper.accountsToAccountDTOsFromAccount(accounts);
         if(onlyOverdue){
-            accounts.removeIf(
+            accountDTOs.removeIf(
                     account -> {
                         account.getRentRecords().removeIf(
                                 rentRecord -> rentRecord.getOverdueDays() == 0
@@ -96,14 +98,15 @@ public class AccountServiceImpl implements AccountService {
                     }
             );
         }
-        Collections.sort(accounts, Collections.reverseOrder());
-        return accounts;
+        Collections.sort(accountDTOs, Collections.reverseOrder());
+        return accountDTOs;
     }
 
     @Override
-    public List<Account> findAllOnlyRentedBooks(boolean onlyOverdue) {
+    public List<AccountDTO> findAllOnlyRentedBooks(boolean onlyOverdue) {
         List<Account> accounts = accountRepository.findAll();
-        accounts.removeIf(
+        List<AccountDTO> accountDTOs = accountMapper.accountsToAccountDTOsFromAccount(accounts);
+        accountDTOs.removeIf(
                 account -> {
                     account.getRentRecords().removeIf(
                             rentRecord -> rentRecord.getActualReturnTime() != null || (onlyOverdue && rentRecord.getOverdueDays() == 0)
@@ -111,22 +114,22 @@ public class AccountServiceImpl implements AccountService {
                     return account.getRentRecords().isEmpty();
                 }
         );
-        Collections.sort(accounts, Collections.reverseOrder());
-        return accounts;
+        Collections.sort(accountDTOs, Collections.reverseOrder());
+        return accountDTOs;
     }
 
     @Override
-    public Optional<Account> findByIdOnlyRentedBooks(Long id) {
+    public AccountDTO findByIdOnlyRentedBooks(Long id) {
         Optional<Account> accountOptional = accountRepository.findById(id);
         if (accountOptional.isEmpty()) {
             log.error("Account not found, id: " + id);
-            return Optional.empty();
+            return null;
         }
-        Account account = accountOptional.get();
-        account.getRentRecords().removeIf(
+        AccountDTO accountDTO = accountMapper.accountToAccountDTOFromAccount(accountOptional.get());
+        accountDTO.getRentRecords().removeIf(
                 rentRecord -> rentRecord.getActualReturnTime() != null
         );
-        return Optional.of(account);
+        return accountDTO;
     }
 
     @Transactional
