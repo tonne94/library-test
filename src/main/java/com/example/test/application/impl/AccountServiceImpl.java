@@ -86,14 +86,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> findAll(boolean onlyOverdue) {
         List<Account> accounts = accountRepository.findAll();
-        accounts.removeIf(
-                account -> {
-                    account.getRentRecords().removeIf(
-                            rentRecord -> onlyOverdue && rentRecord.getOverdueDays() == 0
-                    );
-                    return account.getRentRecords().isEmpty();
-                }
-        );
+        if(onlyOverdue){
+            accounts.removeIf(
+                    account -> {
+                        account.getRentRecords().removeIf(
+                                rentRecord -> rentRecord.getOverdueDays() == 0
+                        );
+                        return account.getRentRecords().isEmpty();
+                    }
+            );
+        }
         Collections.sort(accounts, Collections.reverseOrder());
         return accounts;
     }
