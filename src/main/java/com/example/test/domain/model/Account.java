@@ -37,7 +37,7 @@ public class Account implements Comparable<Account> {
     @NotNull
     private String surname;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RentRecord> rentRecords = new ArrayList<>();
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
