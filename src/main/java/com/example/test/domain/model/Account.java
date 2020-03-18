@@ -11,9 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,5 +46,19 @@ public class Account {
 
     @NotNull
     private boolean isValid = false;
+
+    @Transient
+    private Long totalOverdueDay;
+
+    @Transient
+    private Long totalNotPaidOverdueDays;
+
+    @PostLoad
+    private void calculate() {
+        totalNotPaidOverdueDays = getRentRecords().stream().filter(rentRecord -> !rentRecord.isOverdueDaysPaid())
+                .mapToLong(RentRecord::getOverdueDays).sum();
+
+        totalOverdueDay = getRentRecords().stream().mapToLong(RentRecord::getOverdueDays).sum();
+    }
 
 }

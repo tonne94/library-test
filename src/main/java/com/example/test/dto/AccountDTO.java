@@ -1,7 +1,5 @@
 package com.example.test.dto;
 
-import com.example.test.domain.model.Account;
-import com.example.test.domain.model.RentRecord;
 import com.example.test.interfaces.web.rest.JsonView.AccountView;
 import com.example.test.interfaces.web.rest.JsonView.RentedBookView;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -40,13 +38,19 @@ public class AccountDTO implements Serializable, Comparable<AccountDTO> {
     @JsonView({AccountView.class, RentedBookView.class})
     private boolean isValid;
 
+    @JsonView({AccountView.class})
+    private Long totalOverdueDay;
+
+    @JsonView({AccountView.class})
+    private Long totalNotPaidOverdueDays;
+
     @Override
     public int compareTo(AccountDTO accountDTO) {
         Long overdueDaysSum = rentRecords.stream()
-                .filter(rentRecord -> rentRecord.getActualReturnTime() == null && !rentRecord.isOverdueDaysPaid())
+                .filter(rentRecord -> !rentRecord.isOverdueDaysPaid())
                 .mapToLong(RentRecordDTO::getOverdueDays).sum();
         Long overdueDaysSumAccount = accountDTO.getRentRecords().stream()
-                .filter(rentRecord -> rentRecord.getActualReturnTime() == null && !rentRecord.isOverdueDaysPaid())
+                .filter(rentRecord -> !rentRecord.isOverdueDaysPaid())
                 .mapToLong(RentRecordDTO::getOverdueDays).sum();
         return overdueDaysSum.compareTo(overdueDaysSumAccount);
     }
