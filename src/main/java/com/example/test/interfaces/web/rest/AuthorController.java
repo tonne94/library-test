@@ -35,6 +35,10 @@ public class AuthorController {
         this.authorMapper = authorMapper;
     }
 
+    /**
+     * Get all authors with books they are associated with
+     * @return List of AuthorDTO
+     */
     @GetMapping
     @JsonView(AuthorView.class)
     public ResponseEntity<List<AuthorDTO>> getAuthors() {
@@ -42,6 +46,11 @@ public class AuthorController {
         return new ResponseEntity<>(authorMapper.authorsToAuthorDTOsFromAuthor(authorRepository.findAll()), HttpStatus.OK);
     }
 
+    /**
+     * Get author by id with books they are associated with
+     * @param id id of an author
+     * @return AuthorDTO
+     */
     @GetMapping("/{id}")
     @JsonView(AuthorView.class)
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable Long id) {
@@ -51,6 +60,11 @@ public class AuthorController {
         return optionalAuthor.map(author -> new ResponseEntity<>(authorMapper.authorToAuthorDTOFromAuthor(author), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Create new author
+     * @param authorDTO
+     * @return AccountDTO of newly created Author
+     */
     @PostMapping
     @JsonView(AuthorView.class)
     public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) {

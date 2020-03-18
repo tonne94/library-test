@@ -53,6 +53,10 @@ public class BookController {
         this.rentRecordRepository = rentRecordRepository;
     }
 
+    /**
+     * Get all books with authors
+     * @return List of BookDTO
+     */
     @GetMapping
     @JsonView(BookView.class)
     public ResponseEntity<List<BookDTO>> getBooks() {
@@ -60,6 +64,11 @@ public class BookController {
         return new ResponseEntity<>(bookMapper.booksToBookDTOsFromBook(bookRepository.findAll()), HttpStatus.OK);
     }
 
+    /**
+     * Get book by id with authors
+     * @param id
+     * @return BookDTO
+     */
     @GetMapping("/{id}")
     @JsonView(BookView.class)
     public ResponseEntity<BookDTO> getBook(@PathVariable Long id) {
@@ -70,6 +79,11 @@ public class BookController {
 
     }
 
+    /**
+     * Create new book
+     * @param bookDTO
+     * @return BookDTO
+     */
     @PostMapping
     @JsonView(BookView.class)
     public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
@@ -79,6 +93,11 @@ public class BookController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
+    /**
+     * Add new book record to a book
+     * @param id id of a book to add a book record
+     * @return BookDTO
+     */
     @PostMapping("/{id}/add-book-record")
     @JsonView(BookView.class)
     public ResponseEntity<?> addBookRecord(@PathVariable Long id) {
@@ -92,6 +111,12 @@ public class BookController {
         return result.map(book -> new ResponseEntity<>(bookMapper.bookToBookDTOFromBook(book), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
+    /**
+     * Invalidating book record so it can not longer be rented
+     * @param bookId book id for which the book record should exist
+     * @param bookRecordId book record id which is being invalidated
+     * @return BookDTO
+     */
     @DeleteMapping("/{bookId}/invalidate-book-record/{bookRecordId}")
     @JsonView(BookView.class)
     public ResponseEntity<?> invalidateBookRecord(@PathVariable Long bookId, @PathVariable Long bookRecordId) {

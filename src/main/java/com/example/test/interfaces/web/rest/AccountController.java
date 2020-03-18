@@ -56,6 +56,12 @@ public class AccountController {
         this.rentRecordRepository = rentRecordRepository;
     }
 
+    /**
+     * Get all accounts
+     * @param onlyRentedBooks   show only rented books per account
+     * @param onlyOverdue   show only overdue books per account
+     * @return List of AccountDTO
+     */
     @GetMapping
     @JsonView(AccountView.class)
     public ResponseEntity<List<AccountDTO>> getAccounts(@RequestParam(value = "only-rented", required = false) boolean onlyRentedBooks,
@@ -67,6 +73,12 @@ public class AccountController {
         return new ResponseEntity<>(accountService.findAll(onlyOverdue), HttpStatus.OK);
     }
 
+    /**
+     * Get one account by id
+     * @param id id of an account
+     * @param onlyRentedBooks show only rented books for that account
+     * @return AccountDTO
+     */
     @GetMapping("/{id}")
     @JsonView(AccountView.class)
     public ResponseEntity<AccountDTO> getAccount(@PathVariable Long id, @RequestParam(value = "only-rented", required = false) boolean onlyRentedBooks) {
@@ -82,6 +94,11 @@ public class AccountController {
         return optionalAccount.map(account -> new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(account), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Create account with an image file
+     * @param file image of a document to be processed with microblink api
+     * @return AccountDTO of newly created account
+     */
     @PostMapping("/image")
     @JsonView(AccountView.class)
     public ResponseEntity<AccountDTO> createAccountUsingImage(@RequestParam("file") MultipartFile file) {
@@ -90,6 +107,11 @@ public class AccountController {
         return new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(result.get()), HttpStatus.OK);
     }
 
+    /**
+     * Create account with an DocumnetDTO, containting base64 string for image and recognizerType
+     * @param documentDTO
+     * @return AccountDTO of newly created account
+     */
     @PostMapping("/with-document=true")
     @JsonView(AccountView.class)
     public ResponseEntity<AccountDTO> createAccountUsingDocumentDTO(@Valid @RequestBody DocumentDTO documentDTO) {
@@ -98,6 +120,11 @@ public class AccountController {
         return new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(result.get()), HttpStatus.OK);
     }
 
+    /**
+     * Create account through normal call with AccountDTO
+     * @param accountDTO
+     * @return AccountDTO of newly created account
+     */
     @PostMapping
     @JsonView(AccountView.class)
     public ResponseEntity<AccountDTO> createAccount(@Valid @RequestBody AccountDTO accountDTO) {
@@ -106,6 +133,11 @@ public class AccountController {
         return new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(result.get()), HttpStatus.OK);
     }
 
+    /**
+     * Updating account by id
+     * @param accountDTO
+     * @return AccountDTO of updated account
+     */
     @PatchMapping("/{id}")
     @JsonView(AccountView.class)
     public ResponseEntity<AccountDTO> updateAccount(@Valid @RequestBody AccountDTO accountDTO) {
@@ -114,6 +146,11 @@ public class AccountController {
         return new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(result), HttpStatus.OK);
     }
 
+    /**
+     * Delete account by id
+     * @param id
+     * @return Return 200 OK
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
         log.info("Deleting account with id: " + id);
@@ -121,6 +158,12 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Rent a book with account id and book record id
+     * @param accountId Account id for which to rent a specific book record id
+     * @param bookRecordId Book record id to be rented
+     * @return AccountDTO with rent record of newly rented book record id
+     */
     @PostMapping("/{accountId}/rent-book-record/{bookRecordId}")
     @JsonView(AccountView.class)
     public ResponseEntity<?> rentBook(@PathVariable Long accountId, @PathVariable Long bookRecordId) {
@@ -149,6 +192,12 @@ public class AccountController {
         return new ResponseEntity<>(accountMapper.accountToAccountDTOFromAccount(result.get()), HttpStatus.OK);
     }
 
+    /**
+     * Return a book with account id and book record id
+     * @param accountId Account id for which to return a specific book record id
+     * @param bookRecordId Book record id to be returned
+     * @return AccountDTO with returned rent record of returned book record id
+     */
     @PostMapping("/{accountId}/return-book/{bookRecordId}")
     @JsonView(AccountView.class)
     public ResponseEntity<?> returnBook(@PathVariable Long accountId, @PathVariable Long bookRecordId) {

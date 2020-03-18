@@ -21,6 +21,11 @@ public class BookRecordServiceImpl implements BookRecordService {
         this.bookRecordRepository = bookRecordRepository;
     }
 
+    /**
+     * adding a book record for a book
+     * @param book
+     * @return Optional of book
+     */
     @Transactional
     @Override
     public Optional<Book> addBookRecord(Book book) {
@@ -28,6 +33,12 @@ public class BookRecordServiceImpl implements BookRecordService {
         return Optional.of(bookRepository.save(book));
     }
 
+    /**
+     * invalidating a book record
+     * @param book
+     * @param bookRecordId
+     * @return Optional of book
+     */
     @Transactional
     @Override
     public Optional<Book> invalidateBookRecord(Book book, Long bookRecordId) {

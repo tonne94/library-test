@@ -35,6 +35,11 @@ public class RentRecordController {
         this.rentRecordRepository = rentRecordRepository;
     }
 
+    /**
+     * Get all rent records
+     * @param onlyRented get only currently rented records
+     * @return List of RentRecordDTO
+     */
     @GetMapping
     @JsonView(RentedBookView.class)
     public ResponseEntity<List<RentRecordDTO>> getRentRecords(
@@ -46,6 +51,12 @@ public class RentRecordController {
         return new ResponseEntity<>(rentRecordMapper.rentRecordsToRentRecordDTOsFromRented(rentRecordRepository.findAll()), HttpStatus.OK);
     }
 
+    /**
+     * Get rent records by account id
+     * @param id id of an account
+     * @param onlyRented get only currently rented records
+     * @return List of RentRecordDTO
+     */
     @GetMapping("/account/{id}")
     @JsonView(RentedBookView.class)
     public ResponseEntity<List<RentRecordDTO>> getRentRecordsByAccountId(@PathVariable Long id,
@@ -57,6 +68,12 @@ public class RentRecordController {
         return new ResponseEntity<>(rentRecordMapper.rentRecordsToRentRecordDTOsFromRented(rentRecordRepository.findByAccountId(id)), HttpStatus.OK);
     }
 
+    /**
+     * Get rent records by book record id
+     * @param id id of an book record
+     * @param onlyRented get only currently rented records
+     * @return List of RentRecordDTO
+     */
     @GetMapping("/book-record/{id}")
     @JsonView(RentedBookView.class)
     public ResponseEntity<List<RentRecordDTO>> getRentRecordsByBookRecordId(@PathVariable Long id,
@@ -68,6 +85,12 @@ public class RentRecordController {
         return new ResponseEntity<>(rentRecordMapper.rentRecordsToRentRecordDTOsFromRented(rentRecordRepository.findByBookRecordId(id)), HttpStatus.OK);
     }
 
+    /**
+     * Get rent records by book id
+     * @param id id of an book
+     * @param onlyRented get only currently rented records
+     * @return List of RentRecordDTO
+     */
     @GetMapping("/book/{id}")
     @JsonView(RentedBookView.class)
     public ResponseEntity<List<RentRecordDTO>> getRentRecordsByBookId(@PathVariable Long id,
@@ -79,6 +102,11 @@ public class RentRecordController {
         return new ResponseEntity<>(rentRecordMapper.rentRecordsToRentRecordDTOsFromRented(rentRecordRepository.findByBookId(id)), HttpStatus.OK);
     }
 
+    /**
+     * Endpoint to check for paid overdue days
+     * @param id id of an rent record
+     * @return RentRecordDTO
+     */
     @PatchMapping("/{id}/overdue-days-paid=true")
     public ResponseEntity<?> overdueDaysPaid(@PathVariable Long id) {
         log.info("Overdue days paid");

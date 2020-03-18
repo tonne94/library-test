@@ -26,6 +26,11 @@ public class BookServiceImpl implements BookService {
         this.bookRepository = bookRepository;
     }
 
+    /**
+     * create a new book implementation
+     * @param book book to be created along with authors
+     * @return Optional of Book
+     */
     @Transactional
     @Override
     public Optional<Book> createNewBook(Book book) {

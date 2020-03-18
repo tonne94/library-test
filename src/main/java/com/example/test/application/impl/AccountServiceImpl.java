@@ -57,6 +57,12 @@ public class AccountServiceImpl implements AccountService {
         this.rentRecordRepository = rentRecordRepository;
     }
 
+    /**
+     * Rent a book record for an account
+     * @param account account to rent a book
+     * @param bookRecord bookRecord to be rented
+     * @return Optional of Account
+     */
     @Override
     public Optional<Account> rentBook(Account account, BookRecord bookRecord) {
         RentRecord rentRecord = new RentRecord();
@@ -70,6 +76,11 @@ public class AccountServiceImpl implements AccountService {
         return Optional.of(result);
     }
 
+    /**
+     * Return a book record
+     * @param rentRecord rent record to be returned
+     * @return Account
+     */
     @Override
     public Account returnBook(RentRecord rentRecord) {
         rentRecord.setActualReturnTime(LocalDateTime.now());
@@ -80,6 +91,11 @@ public class AccountServiceImpl implements AccountService {
         return accountOptional.get();
     }
 
+    /**
+     * Find all accounts
+     * @param onlyOverdue show only overdue rent records
+     * @return List of AccountDTO
+     */
     @Override
     public List<AccountDTO> findAll(boolean onlyOverdue) {
         List<Account> accounts = accountRepository.findAll();
@@ -98,6 +114,11 @@ public class AccountServiceImpl implements AccountService {
         return accountDTOs;
     }
 
+    /**
+     * find all acounts with rented books
+     * @param onlyOverdue show only overdue rent records
+     * @return List of AccountDTO
+     */
     @Override
     public List<AccountDTO> findAllOnlyRentedBooks(boolean onlyOverdue) {
         List<Account> accounts = accountRepository.findAll();
@@ -114,6 +135,11 @@ public class AccountServiceImpl implements AccountService {
         return accountDTOs;
     }
 
+    /**
+     * Find account by id with only rented books
+     * @param id id of account
+     * @return AccountDTO
+     */
     @Override
     public AccountDTO findByIdOnlyRentedBooks(Long id) {
         Optional<Account> accountOptional = accountRepository.findById(id);
@@ -128,6 +154,11 @@ public class AccountServiceImpl implements AccountService {
         return accountDTO;
     }
 
+    /**
+     * Account creation from account model
+     * @param account
+     * @return Optional of account
+     */
     @Transactional
     @Override
     public Optional<Account> createAccount(Account account) {
@@ -136,6 +167,11 @@ public class AccountServiceImpl implements AccountService {
         return Optional.of(accountRepository.save(account));
     }
 
+    /**
+     * Account creation from DocumentDTO
+     * @param documentDTO containing recognizerType and image in base64 string
+     * @return Optional of account
+     */
     @Transactional
     @Override
     public Optional<Account> createAccountWithDocumentDTO(DocumentDTO documentDTO) {
@@ -174,6 +210,11 @@ public class AccountServiceImpl implements AccountService {
         return Optional.of(accountRepository.save(account));
     }
 
+    /**
+     * Account creation with image file
+     * @param multipartFile image file
+     * @return Optional of account
+     */
     @Transactional
     @Override
     public Optional<Account> createAccountWithImage(MultipartFile multipartFile) {
@@ -237,6 +278,11 @@ public class AccountServiceImpl implements AccountService {
         return Optional.of(accountRepository.save(account));
     }
 
+    /**
+     * Update of account
+     * @param account
+     * @return Account
+     */
     @Transactional
     @Override
     public Account updateAccount(Account account) {
@@ -246,12 +292,25 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
+    /**
+     * Transforming multipart file to file
+     * @param multipart mulitpart file of an image
+     * @param fileName file name of multipart file
+     * @return File
+     * @throws IllegalStateException
+     * @throws IOException
+     */
     private static File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
         multipart.transferTo(convFile);
         return convFile;
     }
 
+    /**
+     * Getting file extension
+     * @param filename
+     * @return Optional of String
+     */
     private Optional<String> getExtensionByStringHandling(String filename) {
         log.info("Getting extension of a file");
         return Optional.ofNullable(filename)
@@ -259,6 +318,11 @@ public class AccountServiceImpl implements AccountService {
                 .map(f -> f.substring(filename.lastIndexOf(".") + 1));
     }
 
+    /**
+     * Extracting valuable data (rawMRZString)
+     * @param result json String
+     * @return String
+     */
     private String extractrawMRZString(String result) {
         log.info("Extracting rawMRZString");
         Gson gson = new Gson();
@@ -268,6 +332,11 @@ public class AccountServiceImpl implements AccountService {
         return resultObj.get("rawMRZString").getAsString();
     }
 
+    /**
+     * Extract valuable data from rawMRZString
+     * @param rawMRZString data to be run through Regular expression
+     * @return List of Strings
+     */
     private List<String> getAllMatches(String rawMRZString) {
         log.info("Get all matches from result string");
         Pattern pattern = Pattern.compile("([A-Z0-9])+");
@@ -279,6 +348,11 @@ public class AccountServiceImpl implements AccountService {
         return allMatches;
     }
 
+    /**
+     * Extracting check digit String
+     * @param strings
+     * @return String
+     */
     private String extractCheckDigitString(List<String> strings) {
         log.info("Extract check digit string");
         StringBuilder stringBuilder = new StringBuilder();
@@ -291,6 +365,12 @@ public class AccountServiceImpl implements AccountService {
         return stringBuilder.toString();
     }
 
+    /**
+     * Checking for valid check digit with a String
+     * @param checkDigitString String to be checked
+     * @param checkDigit check digit
+     * @return boolean
+     */
     private boolean checkDigit(String checkDigitString, int checkDigit) {
         log.info("Calculating and comparing to check digit");
         int sum = 0;
@@ -308,10 +388,20 @@ public class AccountServiceImpl implements AccountService {
         return calculatedCheckDigit == checkDigit;
     }
 
+    /**
+     * converting int to number (by our table)
+     * @param chr
+     * @return int
+     */
     private static int intToNumber(char chr) {
         return (chr - 48);
     }
 
+    /**
+     * converting char to number (by our table)
+     * @param chr
+     * @return int
+     */
     private static int charToNumber(char chr) {
         return (chr - 55);
     }
