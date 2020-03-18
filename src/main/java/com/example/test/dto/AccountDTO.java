@@ -42,8 +42,12 @@ public class AccountDTO implements Serializable, Comparable<AccountDTO> {
 
     @Override
     public int compareTo(AccountDTO accountDTO) {
-        Long overdueDaysSum = rentRecords.stream().filter(rentRecord -> rentRecord.getActualReturnTime() == null).mapToLong(RentRecordDTO::getOverdueDays).sum();
-        Long overdueDaysSumAccount = accountDTO.getRentRecords().stream().filter(rentRecord -> rentRecord.getActualReturnTime() == null).mapToLong(RentRecordDTO::getOverdueDays).sum();
+        Long overdueDaysSum = rentRecords.stream()
+                .filter(rentRecord -> rentRecord.getActualReturnTime() == null && !rentRecord.isOverdueDaysPaid())
+                .mapToLong(RentRecordDTO::getOverdueDays).sum();
+        Long overdueDaysSumAccount = accountDTO.getRentRecords().stream()
+                .filter(rentRecord -> rentRecord.getActualReturnTime() == null && !rentRecord.isOverdueDaysPaid())
+                .mapToLong(RentRecordDTO::getOverdueDays).sum();
         return overdueDaysSum.compareTo(overdueDaysSumAccount);
     }
 }
