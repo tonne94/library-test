@@ -37,6 +37,7 @@ public interface RentRecordRepository extends JpaRepository<RentRecord, Long> {
             value = "SELECT rr.* FROM rent_record rr " +
                     "WHERE rr.account_id = :accountId")
     List<RentRecord> findByAccountId(@Param("accountId") Long accountId);
+
     @Query(nativeQuery = true,
             value = "SELECT rr.* FROM rent_record rr " +
                     "WHERE rr.account_id = :accountId " +

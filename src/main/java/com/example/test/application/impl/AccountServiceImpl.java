@@ -6,7 +6,6 @@ import com.example.test.domain.model.BookRecord;
 import com.example.test.domain.model.Contact;
 import com.example.test.domain.model.RentRecord;
 import com.example.test.domain.repository.AccountRepository;
-import com.example.test.domain.repository.BookRecordRepository;
 import com.example.test.domain.repository.RentRecordRepository;
 import com.example.test.dto.AccountDTO;
 import com.example.test.dto.DocumentDTO;
@@ -46,18 +45,15 @@ public class AccountServiceImpl implements AccountService {
     Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private AccountRepository accountRepository;
-    private BookRecordRepository bookRecordRepository;
     private RentRecordRepository rentRecordRepository;
     private AccountMapper accountMapper;
 
     @Autowired
     public AccountServiceImpl(AccountRepository accountRepository,
                               AccountMapper accountMapper,
-                              BookRecordRepository bookRecordRepository,
                               RentRecordRepository rentRecordRepository) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
-        this.bookRecordRepository = bookRecordRepository;
         this.rentRecordRepository = rentRecordRepository;
     }
 
@@ -88,7 +84,7 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountDTO> findAll(boolean onlyOverdue) {
         List<Account> accounts = accountRepository.findAll();
         List<AccountDTO> accountDTOs = accountMapper.accountsToAccountDTOsFromAccount(accounts);
-        if(onlyOverdue){
+        if (onlyOverdue) {
             accountDTOs.removeIf(
                     account -> {
                         account.getRentRecords().removeIf(

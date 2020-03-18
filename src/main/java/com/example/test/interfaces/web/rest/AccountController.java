@@ -73,7 +73,7 @@ public class AccountController {
         log.info("Get account by id: " + id);
         if (onlyRentedBooks) {
             AccountDTO accountDTO = accountService.findByIdOnlyRentedBooks(id);
-            if(accountDTO!=null){
+            if (accountDTO != null) {
                 return new ResponseEntity<>(accountDTO, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

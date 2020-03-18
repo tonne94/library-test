@@ -50,9 +50,9 @@ public class BookRecord {
 
     @PostLoad
     public void calculateIsAvailable() {
-        if(invalid){
+        if (invalid) {
             isAvailable = false;
-        }else{
+        } else {
             isAvailable = rentRecords.stream().noneMatch(rentRecord -> rentRecord.getActualReturnTime() == null);
         }
     }

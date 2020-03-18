@@ -31,7 +31,7 @@ public class BookServiceImpl implements BookService {
     public Optional<Book> createNewBook(Book book) {
         log.info("Creating new book");
         Set<Author> authorSet = book.getAuthors();
-        Set<Author> authorSetToSave = authorSet.stream().filter(author -> author.getId()==null).collect(Collectors.toSet());
+        Set<Author> authorSetToSave = authorSet.stream().filter(author -> author.getId() == null).collect(Collectors.toSet());
         authorRepository.saveAll(authorSetToSave);
         bookRepository.save(book);
         return Optional.of(book);

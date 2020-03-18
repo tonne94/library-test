@@ -49,9 +49,9 @@ public class RentRecord {
 
     @PostLoad
     public void calculateOverdueDays() {
-        if(actualReturnTime!=null){
+        if (actualReturnTime != null) {
             overdueDays = ChronoUnit.DAYS.between(returnTime, getActualReturnTime()) < 0 ? 0 : ChronoUnit.DAYS.between(returnTime, getActualReturnTime());
-        }else{
+        } else {
             overdueDays = ChronoUnit.DAYS.between(returnTime, LocalDateTime.now()) < 0 ? 0 : ChronoUnit.DAYS.between(returnTime, LocalDateTime.now());
         }
     }
